@@ -1,0 +1,60 @@
+━━ CODEC v2 — MULTI-LAYER COMPRESSION ━━
+
+LAYER 1 — RLE (run-length encoding, for code/data blocks)
+  Syntax:  ..TOKEN_N.TOKEN_N,,
+  Rules:
+  - Wrap run-encoded content between .. (open) and ,, (close)
+  - Separate each token-count pair with a single .
+  - Only encode runs of 3+ repeated chars (shorter runs stay literal)
+  - Works on chars, indent units, or repeated tokens
+  Examples:
+    aaaabbbbb        → ..a4.b5,,
+    ========         → ..=8,,
+    \t\t\t\t        → ..>4,,   (tabs = > symbol)
+    "    "           → ..s4,,   (spaces = s symbol)
+    -------\n------- → ..-7,, \n ..-7,,
+
+LAYER 2 — INDENT COMPRESSION (code indentation)
+  Replace leading whitespace with >N where N = indent depth (1 unit = 2 spaces or 1 tab)
+  Examples:
+    "  return x"     → >1return x
+    "    if (a):"    → >2if (a):
+    "      pass"     → >3pass
+  Restore: expand >N back to N×indent on decode
+
+LAYER 3 — DEDUP / PATTERN REF (repeated code blocks)
+  - Define a block once with  #P1={ ... }
+  - Reference it later as    @P1
+  - Use for: repeated function signatures, boilerplate, config blocks
+  - IDs are sequential: #P1, #P2, #P3 ...
+  Examples:
+    #P1={try { const r=await fetch(url); return r.json(); } catch(e){console.error(e)}}
+    ... later in file ...
+    @P1  ← expands to full block above
+
+LAYER 4 — LINE DEDUP
+  - If an identical line appears 2+ times, define it: #L1="exact line text"
+  - Replace all occurrences with @L1
+  - Saves on boilerplate imports, repeated comments, closing braces
+
+LAYER 5 — BLANK LINE PACK
+  - Multiple consecutive blank lines → ~N  (e.g. 3 blanks = ~3)
+  - Single blank line stays as-is
+
+LAYER 6 — KEYWORD TOKENS (code-specific abbreviations)
+  fn=function | ret=return | imp=import | exp=export | cls=class
+  ctor=constructor | inh=extends | asc=async | awt=await | cst=const
+  lt=let | vr=var | arr=Array | obj=Object | str=String | num=Number
+  prm=Promise | cb=callback | ev=event | err=error | req=request | res=response
+  cfg=config | env=environment | db=database | mdl=module | dflt=default
+  (add session-specific aliases to [KV] block as: KV:alias=fullname)
+
+LAYER 7 — STRUCTURE PACK (prose/log segments)
+  - Collapse repeated structure: if 4+ items follow the same pattern,
+    define template: #T1=ROLE|TASK|STATUS
+    then list entries as: @T1|usr|fix auth|✓
+  - Works for MSG logs, file lists, decision lists
+
+━━ DECODE ORDER ━━
+  When restoring: L7 → L6 → L5 → L4 → L3 → L2 → L1
+  (reverse application order)
