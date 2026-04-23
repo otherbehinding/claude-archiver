@@ -4,8 +4,8 @@ This archives your claude or any ai chatbot into a prompt where it can save ~35%
 
 # HOW TO USE:
 
-1- When you're near the end of your chat copy prompt1.txt and paste it into your chat.
-2- Copy the codeblock it gave you and paste it into a new chat, with that pasted code, copy prompt2.txt and paste it besides it.
+1- When you're near the end of your chat copy ENTER_FIRST and paste it into your chat.
+2- Copy the codeblock it gave you and paste it into a new chat, with that pasted code, copy NEW_CHAT and paste it besides it.
 3- Press enter and watch the chat remember itself.
 
 # Testing
