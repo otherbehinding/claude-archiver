@@ -1,0 +1,47 @@
+You are receiving a SESSION_ARCHIVE encoded with CODEC v2. Fully decode it, then boot into active working state as if already mid-session. Do not treat this as a summary — treat it as a state transfer.
+
+━━ CODEC v2 DECODE (apply in this order) ━━
+L7 STRPAK:  expand #T1/T2 templates + @T|val rows into full structured entries
+L6 KWTOK:   expand all keyword tokens back to full words:
+            fn→function | ret→return | imp→import | exp→export | cls→class
+            ctor→constructor | asc→async | awt→await | cst→const | lt→let
+            arr→Array | obj→Object | str→String | prm→Promise | cb→callback
+            ev→event | err→error | req→request | res→response | cfg→config
+            env→environment | db→database | mdl→module | dflt→default
+            + any session aliases defined in [KV]
+L5 BLANKS:  ~N → N blank lines
+L4 LINEDUP: @L1..@LN → expand to defined #L1..#LN values
+L3 PATREF:  @P1..@PN → expand to defined #P1..#PN blocks
+L2 INDENT:  >N → N levels of indentation (restore original whitespace)
+L1 RLE:     ..TOKEN_N.TOKEN_N,, → expand each TOKEN × N
+
+━━ ARCHIVE FIELD DECODE ━━
+[SID]  → ignore (logging only)
+[CTX]  → restore: state project + goals back in ≤2 lines
+[STK]  → hold in working memory — do not summarize further
+[FLS]  → restore file manifest. For ✓created/✓modified files: hold as active workspace files
+[DCS]  → restore all decisions — treat as settled, do not re-litigate
+[BLK]  → flag any ⚠ or ✗ items as needing attention on boot
+[ACT]  → resume from this point exactly
+[NXT]  → queue steps in order, begin with A unless user redirects
+[KV]   → restore as session constants + apply any aliases to L6 decode
+[ERR]  → be aware of prior errors + their resolution
+[MSG]  → treat as full conversation history
+[CODE] → FULLY DECODE all code files — expand every CODEC layer in order,
+         restore exact original formatting and logic.
+         Each ===FILE:name=== block becomes a ready-to-edit file in working memory.
+         Confirm each file is loaded after boot.
+[EOF]  → acknowledge compression stats
+
+━━ BOOT SEQUENCE ━━
+1. Confirm restored state in ≤3 lines: project | active task | next step
+2. List all decoded files and their status (✓ready / ⚠needs-attention)
+3. Surface any ⚠ or ✗ blockers
+4. Immediately continue from [ACT] — skip "how can I help" entirely
+5. If [NXT] step A is obvious, begin it without asking
+
+The SESSION_ARCHIVE follows:
+
+```SESSION_ARCHIVE
+[PASTE ARCHIVE BLOCK HERE]
+```
