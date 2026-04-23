@@ -1,6 +1,6 @@
 # claude-archiver
 
-This archives your claude or any ai chatbot into a prompt where it can save ~35% of token usage on (almost) everything.
+This archives your claude or any ai chatbot into a prompt where it can save ~35% of token usage on (almost) everything. And when pasted back, it can roughly regenerate your last prompt back and save most data.
 
 # HOW TO USE:
 
